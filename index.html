@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengumuman Seleksi OSIS</title>
+    <style>
+        /* Desain Dasar */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: white;
+            width: 90%;
+            max-width: 400px;
+            padding: 30px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+            box-sizing: border-box;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        /* Tampilan Form Input */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus, input[type="number"]:focus {
+            border-color: #007bff;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Tampilan Pengumuman */
+        #result-section {
+            display: none; /* Disembunyikan awalnya */
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 15px 0;
+            color: white;
+        }
+        .lolos {
+            background-color: #28a745;
+        }
+        .tidak-lolos {
+            background-color: #dc3545;
+        }
+        .error-text {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .btn-kembali {
+            background-color: #6c757d;
+            margin-top: 20px;
+        }
+        .btn-kembali:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- Bagian Input NIS -->
+        <div id="search-section">
+            <h2>Pengumuman OSIS</h2>
+            <p style="color: #666; font-size: 14px; margin-bottom: 20px;">Masukkan Nomor Induk Siswa (NIS) Anda untuk melihat hasil seleksi.</p>
+            <div class="form-group">
+                <input type="number" id="nis-input" placeholder="Contoh: 1001" required>
+            </div>
+            <button id="btn-cek" onclick="cekKelulusan()">Cek Hasil</button>
+            <div id="error-message" class="error-text"></div>
+        </div>
+
+        <!-- Bagian Hasil -->
+        <div id="result-section">
+            <h2>Hasil Seleksi</h2>
+            <h3 id="res-nama" style="margin: 10px 0; color: #333;">Nama Siswa</h3>
+            <p style="margin: 0; color: #666;">Status Anda:</p>
+            <div id="res-status" class="status-badge">Memuat...</div>
+            
+            <button class="btn-kembali" onclick="kembali()">Cek NIS Lain</button>
+        </div>
+
+    </div>
+
+    <script>
+        // GANTI URL DI BAWAH INI DENGAN URL WEB APP DARI GOOGLE APPS SCRIPT ANDA
+        const SCRIPT_URL = "https://script.google.com/macros/library/d/1PhC0gfQD1hq4dbGMmMrn8hwc3zoGF-ijcsDb1fpG0iGc73KLK0QiLiMm/1";
+
+        async function cekKelulusan() {
+            const nis = document.getElementById("nis-input").value;
+            const errorMsg = document.getElementById("error-message");
+            const btn = document.getElementById("btn-cek");
+
+            if (!nis) {
+                errorMsg.innerText = "NIS tidak boleh kosong!";
+                return;
+            }
+
+            // Atur status loading
+            errorMsg.innerText = "";
+            btn.innerText = "Mencari data...";
+            btn.disabled = true;
+
+            try {
+                // Mengambil data dari Google Apps Script
+                const response = await fetch(`${SCRIPT_URL}?nis=${nis}`);
+                const data = await response.json();
+
+                if (data.found) {
+                    // Pindah ke tampilan hasil
+                    document.getElementById("search-section").style.display = "none";
+                    document.getElementById("result-section").style.display = "block";
+
+                    // Masukkan data ke HTML
+                    document.getElementById("res-nama").innerText = data.nama;
+                    
+                    const statusBadge = document.getElementById("res-status");
+                    statusBadge.innerText = data.status;
+                    
+                    // Ganti warna berdasarkan status
+                    if (data.status.toLowerCase().includes("tidak")) {
+                        statusBadge.className = "status-badge tidak-lolos";
+                    } else {
+                        statusBadge.className = "status-badge lolos";
+                    }
+                } else {
+                    errorMsg.innerText = "NIS tidak ditemukan dalam sistem.";
+                }
+            } catch (error) {
+                errorMsg.innerText = "Terjadi kesalahan koneksi. Coba lagi.";
+            } finally {
+                // Kembalikan tombol seperti semula
+                btn.innerText = "Cek Hasil";
+                btn.disabled = false;
+            }
+        }
+
+        function kembali() {
+            // Reset dan kembali ke halaman awal
+            document.getElementById("nis-input").value = "";
+            document.getElementById("search-section").style.display = "block";
+            document.getElementById("result-section").style.display = "none";
+        }
+    </script>
+
+</body>
+</html>
