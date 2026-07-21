@@ -28,8 +28,8 @@
         .container {
             background-color: white;
             width: 90%;
-            max-width: 450px; /* Sedikit dilebarkan agar teks proporsional */
-            border-radius: 15px;
+            max-width: 650px; /* Sedikit dilebarkan agar teks proporsional */
+            border-radius: 10px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
             text-align: center;
             box-sizing: border-box;
@@ -104,21 +104,19 @@
 
         /* Bagian Atas (Gradien) */
         .result-top {
-            padding: 40px 20px 30px;
+            padding: 20px 20px 30px;
             transition: background 0.5s ease;
         }
 
         /* Logo Pill (Bentuk kapsul putih) */
         .logo-pill {
-            background-color: white;
-            border-radius: 50px;
-            display: inline-flex;
+            background-color: transparent;
+            border-radius: 40px;
+            display: flex;
             justify-content: center;
             align-items: center;
-            gap: 15px;
-            padding: 8px 25px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            margin-bottom: 25px;
+            gap: 530px;
+            padding: -10px 25px;
         }
         .logo-pill img {
             height: 45px;
@@ -127,11 +125,16 @@
         /* Judul Selamat / Maaf */
         .result-title {
             color: white;
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 800;
-            line-height: 1.3;
+            line-height: 1.1;
             margin: 0;
             text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: -15px;
+            margin-bottom: 10px;
         }
 
         /* Bagian Bawah (Pesan) */
@@ -140,9 +143,10 @@
             transition: background 0.5s ease;
         }
         .result-desc {
-            font-size: 16px;
+            font-size: 20px;
             line-height: 1.6;
             margin: 0 0 25px 0;
+            font-weight: 500;
         }
 
         /* TEMA JIKA LOLOS (Menyesuaikan Gambar) */
@@ -151,13 +155,13 @@
         }
         .container.bg-lolos .result-bottom {
             background: linear-gradient(to bottom, #f0f7ff, #ffffff);
-            color: #1a237e; /* Teks biru gelap */
+            color: #007bff; /* Teks biru gelap */
         }
         .container.bg-lolos .btn-kembali {
-            background-color: #1e3cff;
+            background-color: #007bff;
         }
         .container.bg-lolos .btn-kembali:hover {
-            background-color: #152bb5;
+            background-color: #0970df;
         }
 
         /* TEMA JIKA TIDAK LOLOS (Gradien Merah Putih) */
@@ -186,20 +190,20 @@
         
         <!-- Bagian Input NIS -->
         <div id="search-section">
-            <div class="logo" style="display: flex; justify-content: center; gap: 25px; margin-bottom: 25px;">
-                <img src="logoskanilan.png" alt="Logo Sekolah" style="height: 60px;">
-                <img src="logoosis.png" alt="Logo OSIS" style="height: 60px;">
+            <div class="logo" style="display: flex; justify-content: center; gap: 500px; margin-bottom: 25px; margin-top: -15px;">
+                <img src="logoskanilan.png" alt="Logo Sekolah" style="height: 55px;">
+                <img src="logoosis.png" alt="Logo OSIS" style="height: 55px;">
             </div>
-
-            <h2>Pengumuman Seleksi<br><span style="color: #007bff; font-weight: bold; font-size: 2.2rem;">OSIS ADHIGANA</span></h2>
-            <p style="color: #666; font-size: 14px; margin-bottom: 20px;">Masukkan Nomor Induk Siswa (NIS) Anda untuk melihat hasil seleksi.</p>
-            
-            <div class="form-group">
-                <input type="number" id="nis-input" placeholder="Contoh: 1001" required>
+            <div>
+                <h2>Pengumuman Seleksi<br><span style="color: #007bff; font-weight: bold; font-size: 2.2rem;">OSIS ADHIGANA</span></h2>
+                <p style="color: #666; font-size: 14px; margin-bottom: 20px;">Masukkan Nomor Induk Siswa (NIS) Anda untuk melihat hasil seleksi.</p>
+                
+                <div class="form-group">
+                    <input type="number" id="nis-input" placeholder="Contoh: 1001" required>
+                </div>
             </div>
-            
-            <button id="btn-cek" onclick="cekKelulusan()">Cek Hasil</button>
-            <div id="error-message" class="error-text"></div>
+                <button id="btn-cek" onclick="cekKelulusan()">Cek Hasil</button>
+                <div id="error-message" class="error-text"></div>
         </div>
 
         <!-- Bagian Hasil (Tampilan Baru) -->
@@ -208,11 +212,11 @@
             <div class="result-top">
                 <div class="logo-pill">
                     <img src="logoskanilan.png" alt="Logo Sekolah">
-                    <img src="logoosis.png" alt="Logo OSIS">
+                    <img src="logoosis.png" alt="Logo OSIS" style="height: 46px;">
                 </div>
                 <h2 class="result-title">
                     <span id="res-title-text">Selamat,</span><br>
-                    <span id="res-nama">Nama Siswa</span>!
+                    <span id="res-nama" style="font-size: 2.3rem;">Nama Siswa</span>
                 </h2>
             </div>
             
