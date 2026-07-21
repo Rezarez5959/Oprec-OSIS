@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pengumuman Seleksi OSIS</title>
+    
+    <!-- Script untuk Animasi Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
     <style>
         /* Desain Dasar */
         body {
@@ -15,7 +19,12 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            background-image: url('banner.png'); /* Ganti dengan path gambar Anda */
+            background-size: cover;
+            background-position: center;
+            backdrop-filter: blur(10px);
         }
+        
         .container {
             background-color: white;
             width: 90%;
@@ -25,7 +34,11 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             text-align: center;
             box-sizing: border-box;
+            position: relative;
+            z-index: 1;
+            transition: background-color 0.5s ease; /* Efek transisi warna yang mulus */
         }
+
         h2 {
             color: #333;
             margin-bottom: 20px;
@@ -59,10 +72,13 @@
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.1s;
         }
         button:hover {
             background-color: #0056b3;
+        }
+        button:active {
+            transform: scale(0.98);
         }
         button:disabled {
             background-color: #ccc;
@@ -71,7 +87,7 @@
 
         /* Tampilan Pengumuman */
         #result-section {
-            display: none; /* Disembunyikan awalnya */
+            display: none; 
         }
         .status-badge {
             display: inline-block;
@@ -81,12 +97,6 @@
             font-weight: bold;
             margin: 20px 0;
             color: white;
-        }
-        .lolos {
-            background-color: #15c83f;
-        }
-        .tidak-lolos {
-            background-color: #db0c21;
         }
         .error-text {
             color: #dc3545;
@@ -100,19 +110,48 @@
         .btn-kembali:hover {
             background-color: #0056b3;
         }
-        .container {
+
+        /* =========================================
+           TEMA WARNA SAAT PENGUMUMAN MUNCUL
+        ========================================= */
+        
+        /* Jika Lolos (Biru) */
+        .container.bg-lolos {
+            background-color: #007bff; /* Biru */
+        }
+        .container.bg-lolos h2, 
+        .container.bg-lolos h3, 
+        .container.bg-lolos p, 
+        .container.bg-lolos span {
+            color: white !important; /* Paksa teks jadi putih agar terbaca */
+        }
+        .container.bg-lolos .status-badge {
+            background-color: #15c83f; /* Tetap hijau terang untuk badge */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: 2px solid white;
+        }
+        .container.bg-lolos .btn-kembali {
             background-color: white;
-            width: 90%;
-            max-width: 400px;
-            padding: 30px 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            text-align: center;
-            box-sizing: border-box;
-            
-            /* Tambahkan dua baris ini agar form berada di depan background */
-            position: relative;
-            z-index: 1;
+            color: #007bff;
+        }
+
+        /* Jika Tidak Lolos (Merah) */
+        .container.bg-gagal {
+            background-color: #db0c21; /* Merah */
+        }
+        .container.bg-gagal h2, 
+        .container.bg-gagal h3, 
+        .container.bg-gagal p, 
+        .container.bg-gagal span {
+            color: white !important; /* Paksa teks jadi putih agar terbaca */
+        }
+        .container.bg-gagal .status-badge {
+            background-color: transparent;
+            border: 3px solid white; /* Desain stempel transparan bergaris putih */
+        }
+        .container.bg-gagal .btn-kembali {
+            background-color: white;
+            color: #db0c21;
         }
     </style>
 </head>
@@ -120,11 +159,11 @@
 
     <div class="header finisher-header" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; position: absolute; top: 0; left: 0; z-index: -1;"></div>
 
-    <div class="container">
+    <!-- ID my-container ditambahkan untuk mempermudah perubahan warna di Javascript -->
+    <div class="container" id="my-container">
         
         <!-- Bagian Input NIS -->
         <div id="search-section">
-
             <div class="logo" style="display: flex; justify-content: center; gap: 25px; margin-bottom: 5px;">
                 <img src="logoskanilan.png" alt="Logo Sekolah" style="width: 57px;">
                 <img src="logoosis.png" alt="Logo Sekolah" style="width: 60px;">
@@ -132,16 +171,17 @@
 
             <h2>Pengumuman Hasil Seleksi <span style="color: #007bff; font-weight: bold; font-size: 2rem;">OSIS ADHIGANA</span></h2>
             <p style="color: #666; font-size: 14px; margin-bottom: 20px;">Masukkan Nomor Induk Siswa (NIS) Anda untuk melihat hasil seleksi.</p>
+            
             <div class="form-group">
                 <input type="number" id="nis-input" placeholder="Contoh: 1001" required>
             </div>
+            
             <button id="btn-cek" onclick="cekKelulusan()">Cek Hasil</button>
             <div id="error-message" class="error-text"></div>
         </div>
 
         <!-- Bagian Hasil -->
         <div id="result-section">
-
             <div class="logo" style="display: flex; justify-content: center; gap: 25px; margin-bottom: 5px;">
                 <img src="logoskanilan.png" alt="Logo Sekolah" style="width: 57px;">
                 <img src="logoosis.png" alt="Logo Sekolah" style="width: 60px;">
@@ -157,45 +197,53 @@
     </div>
 
     <script>
-        // GANTI URL DI BAWAH INI DENGAN URL WEB APP DARI GOOGLE APPS SCRIPT ANDA
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbydN4BZhy4qa4pKkj6NuQeLnPOOdfRlZY1ROFRGfFFDP4ypHKtq9S0D0N6DmPoNnMUT/exec";
 
         async function cekKelulusan() {
             const nis = document.getElementById("nis-input").value;
             const errorMsg = document.getElementById("error-message");
             const btn = document.getElementById("btn-cek");
+            const containerBox = document.getElementById("my-container");
 
             if (!nis) {
                 errorMsg.innerText = "NIS tidak boleh kosong!";
                 return;
             }
 
-            // Atur status loading
             errorMsg.innerText = "";
             btn.innerText = "Mencari data...";
             btn.disabled = true;
 
             try {
-                // Mengambil data dari Google Apps Script
                 const response = await fetch(`${SCRIPT_URL}?nis=${nis}`);
                 const data = await response.json();
 
                 if (data.found) {
-                    // Pindah ke tampilan hasil
                     document.getElementById("search-section").style.display = "none";
                     document.getElementById("result-section").style.display = "block";
-
-                    // Masukkan data ke HTML
                     document.getElementById("res-nama").innerText = data.nama;
                     
                     const statusBadge = document.getElementById("res-status");
                     statusBadge.innerText = data.status;
                     
-                    // Ganti warna berdasarkan status
+                    // ==========================================
+                    // LOGIKA PERUBAHAN WARNA DAN ANIMASI
+                    // ==========================================
                     if (data.status.toLowerCase().includes("tidak")) {
-                        statusBadge.className = "status-badge tidak-lolos";
+                        // JIKA TIDAK LOLOS
+                        containerBox.classList.add("bg-gagal");
                     } else {
-                        statusBadge.className = "status-badge lolos";
+                        // JIKA LOLOS
+                        containerBox.classList.add("bg-lolos");
+                        
+                        // Picu Animasi Confetti
+                        confetti({
+                            particleCount: 300, // Jumlah potongan kertas
+                            spread: 300,         // Sebaran kertas
+                            origin: { y: 0.7 }, // Titik ledakan (0.6 berarti sedikit di bawah tengah)
+                            zIndex: 9999,       // Pastikan animasi berada di paling depan
+                            colors: ['#ffffff', '#15c83f', '#ffc107', '#007bff'] // Warna kertas
+                        });
                     }
                 } else {
                     errorMsg.innerText = "NIS tidak ditemukan dalam sistem.";
@@ -203,57 +251,21 @@
             } catch (error) {
                 errorMsg.innerText = "Terjadi kesalahan koneksi. Coba lagi.";
             } finally {
-                // Kembalikan tombol seperti semula
                 btn.innerText = "Cek Hasil";
                 btn.disabled = false;
             }
         }
 
         function kembali() {
-            // Reset dan kembali ke halaman awal
+            // Reset halaman
             document.getElementById("nis-input").value = "";
             document.getElementById("search-section").style.display = "block";
             document.getElementById("result-section").style.display = "none";
+            
+            // Hapus class warna agar kembali menjadi putih
+            const containerBox = document.getElementById("my-container");
+            containerBox.classList.remove("bg-lolos", "bg-gagal");
         }
     </script>
-
-    <script src="finisher-header.es5.min.js" type="text/javascript"></script>
-
-    <script type="text/javascript">
-        new FinisherHeader({
-        "count": 5,
-        "size": {
-            "min": 1204,
-            "max": 1500,
-            "pulse": 0.5
-        },
-        "speed": {
-            "x": {
-            "min": 0.1,
-            "max": 0.6
-            },
-            "y": {
-            "min": 0.1,
-            "max": 0.6
-            }
-        },
-        "colors": {
-            "background": "#d6eaf0",
-            "particles": [
-            "#0d00d6"
-            ]
-        },
-        "blending": "screen",
-        "opacity": {
-            "center": 0.5,
-            "edge": 0.05
-        },
-        "skew": 0,
-        "shapes": [
-            "c"
-        ]
-        });
-    </script>
-
 </body>
 </html>
