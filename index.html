@@ -27,6 +27,21 @@
             background-size: cover;
             background-position: center;
             backdrop-filter: blur(10px);
+            /* Transisi halus saat warna background berubah */
+            transition: background-image 0.5s ease, background-color 0.5s ease;
+        }
+
+        /* =========================================
+           BACKGROUND BODY DINAMIS (Transparansi < 50%)
+        ========================================= */
+        /* Warna Tint Biru Transparan (35% Opacity) untuk Lolos */
+        body.body-lolos {
+            background-image: linear-gradient(rgba(0, 123, 255, 0.2), rgba(0, 123, 255, 0.2)), url('banner.png');
+        }
+
+        /* Warna Tint Merah Transparan (35% Opacity) untuk Tidak Lolos */
+        body.body-gagal {
+            background-image: linear-gradient(rgba(204, 0, 0, 0.2), rgba(204, 0, 0, 0.2)), url('banner.png');
         }
         
         .container {
@@ -58,15 +73,15 @@
             justify-content: center;
             align-items: center;
             gap: 20px;
-            margin-bottom: 25px;
+            margin-bottom: 0px;
         }
         .logo img {
-            height: 55px;
+            height: 70px;
             width: auto;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         input[type="text"], input[type="number"] {
             width: 100%;
@@ -92,6 +107,7 @@
             font-weight: bold;
             cursor: pointer;
             transition: background-color 0.3s, transform 0.1s;
+            margin-bottom: -10px;
         }
         button:hover {
             background-color: #0056b3;
@@ -125,18 +141,17 @@
 
         /* Logo Pill (Bentuk kapsul putih) */
         .logo-pill {
-            background-color: rgba(255, 255, 255, 0.95);
+            background-color: transparent;
             border-radius: 40px;
-            display: inline-flex;
+            display: flex;
             justify-content: center;
             align-items: center;
-            gap: 15px;
-            padding: 8px 22px;
+            gap: 450px;
             margin-bottom: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            margin-top: -10px;
         }
         .logo-pill img {
-            height: 40px;
+            height: 55px;
             width: auto;
         }
 
@@ -149,6 +164,7 @@
             margin: 0;
             text-shadow: 0 2px 4px rgba(0,0,0,0.15);
             width: 100%;
+            margin-top: -30px;
         }
 
         /* Bagian Bawah (Pesan) */
@@ -203,17 +219,23 @@
 
             .logo {
                 gap: 15px;
-                margin-bottom: 20px;
+                margin-bottom: -5px;
             }
             .logo img {
-                height: 45px;
+                height: 55px;
             }
 
             h2 {
                 font-size: 1.25rem;
+                line-height: 1.2;
             }
             h2 span {
-                font-size: 1.7rem !important;
+                font-size: 2rem !important;
+            }
+
+            .form-group {
+                margin-bottom: 15px;
+                margin-top: 10px;
             }
 
             .result-top {
@@ -221,18 +243,21 @@
             }
 
             .logo-pill {
-                padding: 6px 16px;
-                gap: 12px;
+                gap: 260px;
+                margin-top: -12px;
             }
             .logo-pill img {
-                height: 32px !important;
+                height: 35px !important;
             }
 
             .result-title {
-                font-size: 1.4rem;
+                font-size: 1.2rem;
             }
             #res-nama {
-                font-size: 1.75rem !important;
+                font-size: 1.5rem !important;
+            }
+            #res-title-text {
+                font-size: 1.3rem !important;
             }
 
             .result-bottom {
@@ -246,9 +271,9 @@
         }
 
         .logo img, .logo-pill img {
-    flex-shrink: 0; /* Menjaga gambar tidak mengkerut/hilang di HP */
-    object-fit: contain;
-}
+            flex-shrink: 0;
+            object-fit: contain;
+        }
     </style>
 </head>
 <body>
@@ -265,7 +290,7 @@
             </div>
             <div>
                 <h2>Pengumuman Seleksi<br><span style="color: #007bff; font-weight: bold; font-size: 2.2rem;">OSIS ADHIGANA</span></h2>
-                <p style="color: #666; font-size: 14px; margin-bottom: 20px;">Masukkan Nomor Induk Siswa (NIS) Anda untuk melihat hasil seleksi.</p>
+                <p style="color: #666; font-size: 14px; margin-bottom: 20px; margin-top: -10px;">Masukkan Nomor Induk Siswa (NIS) Anda untuk melihat hasil seleksi.</p>
                 
                 <div class="form-group">
                     <input type="number" id="nis-input" placeholder="Contoh: 1001" required>
@@ -338,11 +363,15 @@
                     if (data.status.toLowerCase().includes("tidak")) {
                         // JIKA TIDAK LOLOS
                         containerBox.classList.add("bg-gagal");
+                        document.body.classList.add("body-gagal"); // Ubah background body ke tint Merah
+
                         titleText.innerText = "Mohon Maaf,";
                         messageText.innerHTML = "Anda <strong>belum terpilih</strong> sebagai anggota OSIS ADHIGANA angkatan 2026/2027. Jangan patah semangat dan teruslah berkarya!";
                     } else {
                         // JIKA LOLOS
                         containerBox.classList.add("bg-lolos");
+                        document.body.classList.add("body-lolos"); // Ubah background body ke tint Biru
+
                         titleText.innerText = "Selamat,";
                         messageText.innerHTML = "Anda dipilih sebagai anggota <strong>OSIS ADHIGANA</strong> angkatan 2026/2027. Kami harap Anda dapat menjaga kepercayaan yang Kami berikan kepada Anda.";
                         
@@ -372,9 +401,10 @@
             document.getElementById("search-section").style.display = "block";
             document.getElementById("result-section").style.display = "none";
             
-            // Hapus class tema agar kembali ke desain default
+            // Hapus class tema dari container dan body agar kembali ke tampilan awal
             const containerBox = document.getElementById("my-container");
             containerBox.classList.remove("bg-lolos", "bg-gagal");
+            document.body.classList.remove("body-lolos", "body-gagal");
         }
     </script>
 </body>
