@@ -28,15 +28,15 @@
         .container {
             background-color: white;
             width: 90%;
-            max-width: 400px;
-            padding: 30px 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-width: 450px; /* Sedikit dilebarkan agar teks proporsional */
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
             text-align: center;
             box-sizing: border-box;
             position: relative;
             z-index: 1;
-            transition: background-color 0.5s ease; /* Efek transisi warna yang mulus */
+            overflow: hidden; /* Penting agar warna background atas menyentuh ujung kontainer */
+            transition: transform 0.3s ease;
         }
 
         h2 {
@@ -46,6 +46,10 @@
         }
         
         /* Tampilan Form Input */
+        #search-section {
+            padding: 40px 20px;
+        }
+
         .form-group {
             margin-bottom: 20px;
         }
@@ -64,7 +68,7 @@
         }
         button {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             background-color: #007bff;
             color: white;
             border: none;
@@ -84,92 +88,110 @@
             background-color: #ccc;
             cursor: not-allowed;
         }
-
-        /* Tampilan Pengumuman */
-        #result-section {
-            display: none; 
-        }
-        .status-badge {
-            display: inline-block;
-            padding: 20px 30px;
-            border-radius: 20px;
-            font-size: 2.25rem;
-            font-weight: bold;
-            margin: 20px 0;
-            color: white;
-        }
         .error-text {
             color: #dc3545;
             font-size: 14px;
             margin-top: 10px;
         }
-        .btn-kembali {
-            background-color: #007bff;
-            margin-top: 20px;
-        }
-        .btn-kembali:hover {
-            background-color: #0056b3;
-        }
 
         /* =========================================
-           TEMA WARNA SAAT PENGUMUMAN MUNCUL
+           DESAIN BARU BAGIAN PENGUMUMAN HASIL
         ========================================= */
-        
-        /* Jika Lolos (Biru) */
-        .container.bg-lolos {
-            background-color: #007bff; /* Biru */
-        }
-        .container.bg-lolos h2, 
-        .container.bg-lolos h3, 
-        .container.bg-lolos p, 
-        .container.bg-lolos span {
-            color: white !important; /* Paksa teks jadi putih agar terbaca */
-        }
-        .container.bg-lolos .status-badge {
-            background-color: #15c83f; /* Tetap hijau terang untuk badge */
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            border: 2px solid white;
-        }
-        .container.bg-lolos .btn-kembali {
-            background-color: white;
-            color: #007bff;
+        #result-section {
+            display: none; 
+            width: 100%;
         }
 
-        /* Jika Tidak Lolos (Merah) */
-        .container.bg-gagal {
-            background-color: #db0c21; /* Merah */
+        /* Bagian Atas (Gradien) */
+        .result-top {
+            padding: 40px 20px 30px;
+            transition: background 0.5s ease;
         }
-        .container.bg-gagal h2, 
-        .container.bg-gagal h3, 
-        .container.bg-gagal p, 
-        .container.bg-gagal span {
-            color: white !important; /* Paksa teks jadi putih agar terbaca */
+
+        /* Logo Pill (Bentuk kapsul putih) */
+        .logo-pill {
+            background-color: white;
+            border-radius: 50px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            padding: 8px 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
         }
-        .container.bg-gagal .status-badge {
-            background-color: transparent;
-            border: 3px solid white; /* Desain stempel transparan bergaris putih */
+        .logo-pill img {
+            height: 45px;
+        }
+
+        /* Judul Selamat / Maaf */
+        .result-title {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 800;
+            line-height: 1.3;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Bagian Bawah (Pesan) */
+        .result-bottom {
+            padding: 30px 25px;
+            transition: background 0.5s ease;
+        }
+        .result-desc {
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 0 0 25px 0;
+        }
+
+        /* TEMA JIKA LOLOS (Menyesuaikan Gambar) */
+        .container.bg-lolos .result-top {
+            background: linear-gradient(135deg, #1e3cff 0%, #5bc0ff 100%);
+        }
+        .container.bg-lolos .result-bottom {
+            background: linear-gradient(to bottom, #f0f7ff, #ffffff);
+            color: #1a237e; /* Teks biru gelap */
+        }
+        .container.bg-lolos .btn-kembali {
+            background-color: #1e3cff;
+        }
+        .container.bg-lolos .btn-kembali:hover {
+            background-color: #152bb5;
+        }
+
+        /* TEMA JIKA TIDAK LOLOS (Gradien Merah Putih) */
+        .container.bg-gagal .result-top {
+            /* Menggunakan gradien merah tegas agar teks putih tetap terbaca */
+            background: linear-gradient(135deg, #cc0000 40%, #ff9999 85%, #ffffff 100%);
+        }
+        .container.bg-gagal .result-bottom {
+            background: linear-gradient(to bottom, #fff0f0, #ffffff);
+            color: #7a1010; /* Teks merah gelap */
         }
         .container.bg-gagal .btn-kembali {
-            background-color: white;
-            color: #db0c21;
+            background-color: #cc0000;
         }
+        .container.bg-gagal .btn-kembali:hover {
+            background-color: #990000;
+        }
+
     </style>
 </head>
 <body>
 
     <div class="header finisher-header" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; position: absolute; top: 0; left: 0; z-index: -1;"></div>
 
-    <!-- ID my-container ditambahkan untuk mempermudah perubahan warna di Javascript -->
     <div class="container" id="my-container">
         
         <!-- Bagian Input NIS -->
         <div id="search-section">
-            <div class="logo" style="display: flex; justify-content: center; gap: 25px; margin-bottom: 5px;">
-                <img src="logoskanilan.png" alt="Logo Sekolah" style="width: 57px;">
-                <img src="logoosis.png" alt="Logo Sekolah" style="width: 60px;">
+            <div class="logo" style="display: flex; justify-content: center; gap: 25px; margin-bottom: 25px;">
+                <img src="logoskanilan.png" alt="Logo Sekolah" style="height: 60px;">
+                <img src="logoosis.png" alt="Logo OSIS" style="height: 60px;">
             </div>
 
-            <h2>Pengumuman Hasil Seleksi <span style="color: #007bff; font-weight: bold; font-size: 2rem;">OSIS ADHIGANA</span></h2>
+            <h2>Pengumuman Seleksi<br><span style="color: #007bff; font-weight: bold; font-size: 2.2rem;">OSIS ADHIGANA</span></h2>
             <p style="color: #666; font-size: 14px; margin-bottom: 20px;">Masukkan Nomor Induk Siswa (NIS) Anda untuk melihat hasil seleksi.</p>
             
             <div class="form-group">
@@ -180,18 +202,27 @@
             <div id="error-message" class="error-text"></div>
         </div>
 
-        <!-- Bagian Hasil -->
+        <!-- Bagian Hasil (Tampilan Baru) -->
         <div id="result-section">
-            <div class="logo" style="display: flex; justify-content: center; gap: 25px; margin-bottom: 5px;">
-                <img src="logoskanilan.png" alt="Logo Sekolah" style="width: 57px;">
-                <img src="logoosis.png" alt="Logo Sekolah" style="width: 60px;">
+            <!-- Separuh Atas (Gradien + Logo) -->
+            <div class="result-top">
+                <div class="logo-pill">
+                    <img src="logoskanilan.png" alt="Logo Sekolah">
+                    <img src="logoosis.png" alt="Logo OSIS">
+                </div>
+                <h2 class="result-title">
+                    <span id="res-title-text">Selamat,</span><br>
+                    <span id="res-nama">Nama Siswa</span>!
+                </h2>
             </div>
-
-            <h2 style="margin-top: 15px; margin-bottom: 0px; font-size: 1.5rem;">Hasil Seleksi</h2>
-            <h3 id="res-nama" style="line-height: 1.2; margin-top: 5px; margin-bottom: 20px; color: #007bff; font-size: 2.5rem;">Nama Siswa</h3>
-            <div id="res-status" class="status-badge">Memuat...</div>
             
-            <button class="btn-kembali" onclick="kembali()">Cek NIS Lain</button>
+            <!-- Separuh Bawah (Teks Pesan) -->
+            <div class="result-bottom">
+                <p class="result-desc" id="res-message">
+                    <!-- Teks diinjeksi via JS -->
+                </p>
+                <button class="btn-kembali" onclick="kembali()">Cek NIS Lain</button>
+            </div>
         </div>
 
     </div>
@@ -219,30 +250,42 @@
                 const data = await response.json();
 
                 if (data.found) {
+                    // Transisi Halaman
                     document.getElementById("search-section").style.display = "none";
                     document.getElementById("result-section").style.display = "block";
+                    
+                    // Set Nama
                     document.getElementById("res-nama").innerText = data.nama;
                     
-                    const statusBadge = document.getElementById("res-status");
-                    statusBadge.innerText = data.status;
-                    
+                    // Elemen Teks
+                    const titleText = document.getElementById("res-title-text");
+                    const messageText = document.getElementById("res-message");
+
                     // ==========================================
-                    // LOGIKA PERUBAHAN WARNA DAN ANIMASI
+                    // LOGIKA PERUBAHAN WARNA DAN TEKS
                     // ==========================================
                     if (data.status.toLowerCase().includes("tidak")) {
                         // JIKA TIDAK LOLOS
                         containerBox.classList.add("bg-gagal");
+                        
+                        // Menyesuaikan Pesan Gagal
+                        titleText.innerText = "Mohon Maaf,";
+                        messageText.innerHTML = "Anda <strong>belum terpilih</strong> sebagai anggota OSIS ADHIGANA angkatan 2026/2027. Jangan patah semangat dan teruslah berkarya!";
                     } else {
                         // JIKA LOLOS
                         containerBox.classList.add("bg-lolos");
                         
+                        // Menyesuaikan Pesan Lolos (Sesuai Gambar)
+                        titleText.innerText = "Selamat,";
+                        messageText.innerHTML = "Anda dipilih sebagai anggota <strong>OSIS ADHIGANA</strong> angkatan 2026/2027. Kami harap Anda dapat menjaga kepercayaan yang Kami berikan kepada Anda.";
+                        
                         // Picu Animasi Confetti
                         confetti({
-                            particleCount: 300, // Jumlah potongan kertas
-                            spread: 300,         // Sebaran kertas
-                            origin: { y: 0.7 }, // Titik ledakan (0.6 berarti sedikit di bawah tengah)
-                            zIndex: 9999,       // Pastikan animasi berada di paling depan
-                            colors: ['#ffffff', '#15c83f', '#ffc107', '#007bff'] // Warna kertas
+                            particleCount: 300, 
+                            spread: 300,        
+                            origin: { y: 0.7 }, 
+                            zIndex: 9999,       
+                            colors: ['#ffffff', '#15c83f', '#ffc107', '#007bff'] 
                         });
                     }
                 } else {
@@ -262,7 +305,7 @@
             document.getElementById("search-section").style.display = "block";
             document.getElementById("result-section").style.display = "none";
             
-            // Hapus class warna agar kembali menjadi putih
+            // Hapus class tema agar kembali ke desain default
             const containerBox = document.getElementById("my-container");
             containerBox.classList.remove("bg-lolos", "bg-gagal");
         }
